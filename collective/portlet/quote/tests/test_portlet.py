@@ -17,6 +17,8 @@ class TestPortlet(TestCase):
 
     def afterSetUp(self):
         self.setRoles(('Manager', ))
+        # Create a folder to have the quotes in:
+        self.portal.portal_types.constructContent('Folder', self.portal, 'quotes')
 
     def test_portlet_type_registered(self):
         portlet = getUtility(
@@ -79,6 +81,7 @@ class TestRenderer(TestCase):
 
     def afterSetUp(self):
         self.setRoles(('Manager', ))
+        self.portal.portal_types.constructContent('Folder', self.portal, 'quotes')
 
     def renderer(self, context=None, request=None, view=None, manager=None,
                  assignment=None):
@@ -96,13 +99,35 @@ class TestRenderer(TestCase):
 
     def test_render(self):
         # TODO: Pass any keyword arguments to the Assignment constructor.
-        r = self.renderer(context=self.portal,
-                          assignment=randomquote.Assignment())
+        self.portal.portal_types.constructContent('Quote', self.portal, 
+                                                  'not-included')
+
+        r = self.renderer(
+            context=self.portal,
+            assignment=randomquote.Assignment(
+                target_folder='/'.join(self.portal.quotes.getPhysicalPath())
+            )
+        )
         r = r.__of__(self.folder)
         r.update()
         output = r.render()
-        # TODO: Test output
 
+        # There should be no quotes yet.
+        self.assertFalse('quote' in output)
+        
+        # Add a quote
+        self.portal.portal_types.constructContent('Quote', self.portal.quotes, 
+            'included', text="This is a quote", source="Me", 
+            url="http://google.com")
+
+        # Now there should be a quote in the output
+        r.update()
+        output = r.render()
+        self.assertTrue('This is a quote' in output)
+        self.assertTrue('Me' in output)
+        
+        # Testing randomness is hard, so I won't. Done!
+        
 
 def test_suite():
     from unittest import TestSuite, makeSuite

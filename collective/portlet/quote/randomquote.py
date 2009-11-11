@@ -1,11 +1,13 @@
+import random
 from zope.interface import implements
-
-from plone.portlets.interfaces import IPortletDataProvider
-from plone.app.portlets.portlets import base
-
 from zope import schema
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+
+from plone.portlets.interfaces import IPortletDataProvider
+from plone.app.portlets.portlets import base
+from plone.app.vocabularies.catalog import SearchableTextSourceBinder
+from plone.app.form.widgets.uberselectionwidget import UberSelectionWidget
 
 from collective.portlet.quote import RandomQuoteMessageFactory as _
 
@@ -17,15 +19,17 @@ class IRandomQuote(IPortletDataProvider):
     data that is being rendered and the portlet assignment itself are the
     same.
     """
-
-    # TODO: Add any zope.schema fields here to capture portlet configuration
-    # information. Alternatively, if there are no settings, leave this as an
-    # empty interface - see also notes around the add form and edit form
-    # below.
-
-    # some_field = schema.TextLine(title=_(u"Some field"),
-    #                              description=_(u"A field to use"),
-    #                              required=True)
+    title = schema.TextLine(
+        title=_(u"Portlet title"),
+        description=_(u"Portlet title"),
+        required=False)
+    
+    target_folder = schema.Choice(
+        title=_(u"Quote folder"),
+        description=_(u"The folder that has the quotes in it"),
+        required=True,
+        source=SearchableTextSourceBinder({'is_folderish' : True}),
+        )
 
 
 class Assignment(base.Assignment):
@@ -37,24 +41,12 @@ class Assignment(base.Assignment):
 
     implements(IRandomQuote)
 
-    # TODO: Set default values for the configurable parameters here
+    title = u"Random Quote"
 
-    # some_field = u""
-
-    # TODO: Add keyword parameters for configurable parameters here
-    # def __init__(self, some_field=u""):
-    #    self.some_field = some_field
-
-    def __init__(self):
-        pass
-
-    @property
-    def title(self):
-        """This property is used to give the title of the portlet in the
-        "manage portlets" screen.
-        """
-        return "Random Quote"
-
+    def __init__(self, title=u"", target_folder=None):
+        self.title = title
+        self.target_folder = target_folder
+        
 
 class Renderer(base.Renderer):
     """Portlet renderer.
@@ -65,7 +57,30 @@ class Renderer(base.Renderer):
     """
 
     render = ViewPageTemplateFile('randomquote.pt')
-
+    _quote = None
+    
+    def _find_quote(self):
+        if self._quote is not None:
+            return self._quote
+        
+        catalog = self.context.portal_catalog
+        brains = catalog(path=self.data.target_folder, portal_type="Quote")
+        if not brains:
+            return None
+        self._quote = random.choice(brains).getObject()
+        return self._quote
+        
+    def get_quote(self):
+        quote = self._find_quote()
+        if quote is None:
+            return ""
+        return quote.getText()
+        
+    def get_source(self):
+        quote = self._find_quote()
+        if quote is None:
+            return ""
+        return quote.getSource()
 
 class AddForm(base.AddForm):
     """Portlet add form.
@@ -75,24 +90,10 @@ class AddForm(base.AddForm):
     constructs the assignment that is being added.
     """
     form_fields = form.Fields(IRandomQuote)
+    form_fields['target_folder'].custom_widget = UberSelectionWidget
 
     def create(self, data):
         return Assignment(**data)
-
-
-# NOTE: If this portlet does not have any configurable parameters, you
-# can use the next AddForm implementation instead of the previous.
-
-# class AddForm(base.NullAddForm):
-#     """Portlet add form.
-#     """
-#     def create(self):
-#         return Assignment()
-
-
-# NOTE: If this portlet does not have any configurable parameters, you
-# can remove the EditForm class definition and delete the editview
-# attribute from the <plone:portlet /> registration in configure.zcml
 
 
 class EditForm(base.EditForm):
@@ -102,3 +103,4 @@ class EditForm(base.EditForm):
     zope.formlib which fields to display.
     """
     form_fields = form.Fields(IRandomQuote)
+    form_fields['target_folder'].custom_widget = UberSelectionWidget

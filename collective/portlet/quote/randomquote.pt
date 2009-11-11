@@ -3,17 +3,17 @@
 
     <dt class="portletHeader">
         <span class="portletTopLeft"></span>
-        Header
+        <tal:block replace="view/data/title"/>
         <span class="portletTopRight"></span>
     </dt>
 
-    <dd class="portletItem odd">
+    <dd class="portletItem odd" tal:content="view/get_quote">
         Body text
     </dd>
 
     <dd class="portletFooter">
         <span class="portletBottomLeft"></span>
-        Footer
+        <tal:block replace="view/get_source"/>
         <span class="portletBottomRight"></span>
     </dd>
 
