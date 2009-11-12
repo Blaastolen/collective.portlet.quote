@@ -105,7 +105,7 @@ class TestRenderer(TestCase):
         r = self.renderer(
             context=self.portal,
             assignment=randomquote.Assignment(
-                target_folder='/'.join(self.portal.quotes.getPhysicalPath())
+                target_folder='/quotes'
             )
         )
         r = r.__of__(self.folder)

@@ -64,7 +64,8 @@ class Renderer(base.Renderer):
             return self._quote
         
         catalog = self.context.portal_catalog
-        brains = catalog(path=self.data.target_folder, portal_type="Quote")
+        path = self.context.portal_url.getPortalPath() + self.data.target_folder
+        brains = catalog(path=path, portal_type="Quote")
         if not brains:
             return None
         self._quote = random.choice(brains).getObject()
