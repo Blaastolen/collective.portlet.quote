@@ -7,7 +7,7 @@
         <span class="portletTopRight"></span>
     </dt>
 
-    <dd class="portletItem odd" tal:content="view/get_quote">
+    <dd class="portletItem odd" tal:content="structure view/get_quote">
         Body text
     </dd>
 
