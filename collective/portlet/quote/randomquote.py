@@ -26,7 +26,7 @@ class IRandomQuote(IPortletDataProvider):
     
     target_folder = schema.Choice(
         title=_(u"Quote folder"),
-        description=_(u"The folder that has the quotes in it"),
+        description=_(u"The folder that holds the quotes"),
         required=True,
         source=SearchableTextSourceBinder({'is_folderish' : True}),
         )

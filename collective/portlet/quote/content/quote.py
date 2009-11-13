@@ -20,7 +20,7 @@ QuoteSchema = schemata.ATContentTypeSchema.copy() + atapi.Schema((
         storage=atapi.AnnotationStorage(),
         widget=atapi.TextAreaWidget(
             label=_(u"Quote"),
-            description=_(u"The quote?"),
+            description=_(u"The quote"),
         ),
         required=True,
     ),
