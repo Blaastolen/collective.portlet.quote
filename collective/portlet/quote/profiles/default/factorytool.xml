@@ -11,5 +11,6 @@
   <factorytypes>
     <!-- -*- extra stuff goes here -*- -->
     <type portal_type="Quote" />
+    <type portal_type="QuoteFolder" />
   </factorytypes>
 </object>

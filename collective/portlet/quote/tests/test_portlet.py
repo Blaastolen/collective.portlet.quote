@@ -117,7 +117,7 @@ class TestRenderer(TestCase):
         
         # Add a quote
         self.portal.portal_types.constructContent('Quote', self.portal.quotes, 
-            'included', text="This is a quote", source="Me", 
+            'included', quote="This is a quote", source="Me", 
             url="http://google.com")
 
         # Now there should be a quote in the output

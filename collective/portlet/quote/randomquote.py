@@ -75,13 +75,24 @@ class Renderer(base.Renderer):
         quote = self._find_quote()
         if quote is None:
             return ""
-        return quote.getText()
+        return '<br/>'.join(quote.getQuote().splitlines())
         
     def get_source(self):
         quote = self._find_quote()
         if quote is None:
             return ""
         return quote.getSource()
+    
+    def has_link(self):
+        link = self.get_link()
+        return bool(link)
+        
+    def get_link(self):
+        quote = self._find_quote()
+        if quote is None:
+            return False
+        return quote.getLink()
+        
 
 class AddForm(base.AddForm):
     """Portlet add form.

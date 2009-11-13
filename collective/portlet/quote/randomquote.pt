@@ -13,7 +13,11 @@
 
     <dd class="portletFooter">
         <span class="portletBottomLeft"></span>
-        <tal:block replace="view/get_source"/>
+        <tal:block condition="not:view/has_link" replace="view/get_source"/>
+        <tal:block condition="view/has_link">
+            <a tal:content="view/get_source" 
+               tal:attributes="href view/get_link"/>
+        </tal:block>
         <span class="portletBottomRight"></span>
     </dd>
 
