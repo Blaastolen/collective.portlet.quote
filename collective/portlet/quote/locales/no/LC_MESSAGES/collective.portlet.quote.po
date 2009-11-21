@@ -14,10 +14,10 @@ msgstr ""
 "Preferred-Encodings: utf-8 latin9\n"
 "Domain: collective.portlet.quote\n"
 
-#. Default: "A folder for quotes."
+#. Default: "A folder for quotes"
 #: ./profiles/default/types/QuoteFolder.xml
-msgid "A folder for quotes."
-msgstr "En mappe for sitater."
+msgid "A folder for quotes"
+msgstr "En mappe for sitater"
 
 #: ./content/quote.py:43
 msgid "A link to the quote"
