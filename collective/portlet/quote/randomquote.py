@@ -21,15 +21,21 @@ class IRandomQuote(IPortletDataProvider):
     """
     title = schema.TextLine(
         title=_(u"Portlet title"),
-        description=_(u"Portlet title"),
-        required=False)
+        default=_(u"Random Quote"),
+        required=True,
+    )
+    
+    show_title = schema.Bool(
+        title=_(u"Show title"),
+        default = True,
+    )
     
     target_folder = schema.Choice(
         title=_(u"Quote folder"),
         description=_(u"The folder that holds the quotes"),
         required=True,
         source=SearchableTextSourceBinder({'is_folderish' : True}),
-        )
+    )
 
 
 class Assignment(base.Assignment):
@@ -40,11 +46,14 @@ class Assignment(base.Assignment):
     """
 
     implements(IRandomQuote)
+    
+    title = u''
+    show_title = True
+    target_folder = ''
 
-    title = u"Random Quote"
-
-    def __init__(self, title=u"", target_folder=None):
+    def __init__(self, title=u"", show_title=True, target_folder=None):
         self.title = title
+        self.show_title = show_title
         self.target_folder = target_folder
         
 
