@@ -5,7 +5,7 @@ version = '1.0'
 
 setup(name='collective.portlet.quote',
       version=version,
-      description="A portlet showingrandom quotes from a folder",
+      description="A portlet showing random quotes from a folder",
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       # Get more strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
